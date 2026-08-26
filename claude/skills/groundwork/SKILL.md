@@ -54,23 +54,13 @@ orchestration:
       inline: true
       produces: [sources, source-types, unreadable]
       reject: not flag(--lake)
+      presents: [total-count, split-by-how-each-will-be-read, count-genuinely-unreadable]
       because: >
-        Walk the lake and classify **every** file, not the ones whose extensions
-        you recognise. Classify by how it will be read per
-        `lake-provenance.md`'s extraction procedure, not by extension, because
-        that is what determines the locator and because most unfamiliar formats
-        turn out to be a zip or text with a header.
-
-        Report the breakdown before going further: total count, the split by
-        how each will be read, and the count of anything that reaches step 7 and
-        is genuinely unreadable. A lake of 30 documents and a lake of 900 are
-        different jobs, and "40 briefs plus 20 meeting recordings with no
-        transcripts" is a different job again, one where the primary source is
-        missing entirely. The user should hear that at the start rather than
-        find it in a footnote at the end.
-
-        No `--lake` means there is nothing to inventory, and guessing at a path
-        is how you distil the wrong folder.
+        Classify by how a file will be read per `lake-provenance.md`, never by
+        its extension: that is what determines the locator, and most unfamiliar
+        formats turn out to be a zip or text with a header. "40 briefs plus 20
+        recordings with no transcripts" is a different job from "60 documents",
+        and the user hears it now rather than in a footnote.
 
     - id: load-manifest
       requires: [inventory]
@@ -81,11 +71,9 @@ orchestration:
       inline: true
       produces: [unchanged-sources, new-or-changed-sources]
       because: >
-        A prior run persisted a manifest of source identity, hash and what was
-        extracted. Diff against it so a second pass reads what moved rather
-        than the whole lake again. A tool that re-reads three hundred documents
-        to revise one entry is a demo. Skipped on a first run, which is the
-        whole of a cold pass.
+        A prior run persisted source identity, hash and what was extracted.
+        Diff against it so a second pass reads only what moved. A tool that
+        re-reads three hundred documents to revise one entry is a demo.
 
     - id: cluster
       requires: [inventory, load-manifest]
@@ -107,11 +95,10 @@ orchestration:
       ask: [claims-with-locators, governing-commitments, contradictions, implicit-decisions, gaps]
       reject: not matches(source-paths, "/")
       because: >
-        One prospector per cluster, all spawned in one message. Each returns
-        sourced claims rather than a summary, which is what makes the register
-        auditable later. The reject rule is the mechanical half of "never a
-        directory": it catches "the research folder", not a real path list
-        aimed at the wrong cluster, which stays your judgment in `cluster`.
+        One prospector per cluster, all in one message, each returning sourced
+        claims rather than a summary. That is what makes the register auditable
+        later. The `reject:` catches "the research folder"; a real path list
+        aimed at the wrong cluster stays your judgment in `cluster`.
 
     - id: map-prototype
       requires: [cluster]
@@ -131,13 +118,8 @@ orchestration:
       because: >
         A prototype is code and both of these already read code, so do not
         write a third agent for it. Frame the ask as "what did this decide",
-        not "how does this work". `one-of` rather than a hardcoded
-        `cartographer` because the size of the prototype decides this and the
-        block cannot know it: a forty-file Next.js app wants the map, a single
-        route handler someone pasted in wants the narrow lookup, and spending
-        a cartographer on the latter buys a context for one answer. Left in
-        `unresolved[]` on purpose. Skipped when the lake has no prototype,
-        which is common and costs nothing.
+        not "how does this work": an accurate map of a prototype reads as a
+        specification, and nobody reviewed those choices.
 
     - id: prior-context
       requires: [cluster]
@@ -150,21 +132,18 @@ orchestration:
         below.
       because: >
         A register that re-decides something already decided is worse than no
-        register. The archivist spans every storage backend and returns one
-        briefing, and it runs concurrently with the prospectors so it costs no
-        wall clock. This is also how a second pass on a related subject finds
-        the first one.
+        register. The archivist spans every backend and returns one briefing,
+        and it runs beside the prospectors so it costs no wall clock.
 
     - id: read-cited
       requires: [prospect, map-prototype, prior-context]
       inline: true
       reject: matches(read-call, "limit|offset")
       because: >
-        The prospectors name sources; the sources are the evidence. Read every
-        document a load-bearing claim rests on, fully, in your own context. A
-        sub-agent's citation is a pointer, not a verification, and you are
-        about to put these claims in front of a stakeholder under your name. A
-        partial read is how a non-goal in a closing section gets missed.
+        A sub-agent's citation is a pointer, not a verification, and you are
+        about to put these claims in front of a stakeholder under your name.
+        Read every document a load-bearing claim rests on, fully. A partial
+        read is how a non-goal in a closing section gets missed.
 
     - id: cross-check
       requires: [read-cited]
@@ -175,13 +154,11 @@ orchestration:
         specific choices clash with a governing commitment declared elsewhere?
         See "Hunting the quiet contradictions" below.
       because: >
-        `owns:` names arbitration, and this is where it starts. A prospector
-        sees one cluster and reports conflicts inside it; the conflicts that
-        matter most span clusters, because the specific choice and the standard
-        it violates are discussed by different people in different meetings.
-        Nothing else in this run can see both halves. Skipping this step does
-        not lose a nicety, it loses the class of finding the register exists to
-        surface.
+        `owns:` names arbitration and this is where it starts. A prospector
+        sees one cluster; the conflicts that matter most span clusters, because
+        the specific choice and the standard it violates get discussed by
+        different people in different meetings. Nothing else in this run can
+        see both halves.
 
     - id: present-claims
       requires: [cross-check]
@@ -198,9 +175,8 @@ orchestration:
         Which gaps genuinely need a human, and which need another pass over the
         lake? See "Which questions are actually for the human" below.
       because: >
-        Claims before decisions, always. This is the cheapest point at which
-        the user can tell you that Dana left the company and her brief is
-        stale, or that the deck you weighted heavily was never approved. Every
+        Claims before decisions, always. The cheapest point at which the user
+        can tell you a brief is stale or a deck was never approved, and every
         decision downstream is written against what they say here.
 
     - id: verify-corrections
@@ -231,11 +207,7 @@ orchestration:
       because: >
         A second round aimed at what round one surfaced and what the user
         corrected, not a repeat of round one. The `when:` is the mechanical
-        half of "do not invent follow-up work": if round one left nothing open
-        and the user corrected nothing, `follow-up-clusters` is empty and the
-        step skips, rather than handing you a fan-out over nothing and trusting
-        you to decline it. Per the runtime doc, if you can say what you would
-        check, it is a `when:` and not a `judgment:`.
+        half of "do not invent follow-up work".
 
     - id: reconcile
       requires: [verify-corrections, deeper-prospect, cross-check]
@@ -270,11 +242,10 @@ orchestration:
       inline: true
       produces: register-body
       because: >
-        Build the register per `templates/decision-register`, in your own
-        context. This is not delegated: it is the synthesis, and `owns:` says
-        so. Every entry states a decision rather than a topic, every driver
-        carries a locator, every open question carries an owner, and the
-        contradictions table names the losers.
+        The synthesis, and `owns:` says it is never delegated. Build it per
+        `templates/decision-register`: every entry a decision rather than a
+        topic, every driver carrying a locator, every question an owner, and
+        the contradictions table naming the losers.
 
     - id: challenge
       requires: [register]
@@ -300,10 +271,10 @@ orchestration:
       judgment: >
         Is each finding right? See "The arbiter, not a relay" below.
       because: >
-        The challenge happens before the user reads the register. A register
-        they have already read is one they have already started trusting, and
-        an invented driver caught afterwards costs you the whole document's
-        credibility rather than one entry's.
+        This happens before the user reads the register, because one they have
+        already read is one they have already started trusting. An invented
+        driver caught afterwards costs the whole document's credibility rather
+        than one entry's.
 
     - id: approve-register
       requires: [challenge]
@@ -311,11 +282,10 @@ orchestration:
       produces: user-approval
       asks-user: "Shall I save this register with [N] decisions and [M] open questions?"
       because: >
-        Unconditional. No `when:`, because there is no state of the world in
-        which the register is saved unreviewed, and no `agent:`, because a gate
-        is never delegated. `asks-user:` is exactly the question: the register
-        was written out by `present-decisions` directly above, so restating any
-        of it here duplicates what is on screen.
+        Unconditional: there is no state of the world in which the register is
+        saved unreviewed, and a gate is never delegated. `asks-user:` is
+        exactly the question, since `present-decisions` put the register on
+        screen directly above.
 
     - id: save
       requires: [approve-register]
@@ -337,13 +307,12 @@ orchestration:
         notion:   database-row (every required property populated, narrative as body)
         anytype:  object (every required property populated, narrative as body)
       because: >
-        `status: draft`, `type: plan`. A register of proposed decisions is a
-        plan, which is honest and needs no schema change. Note the deliberate
-        departure from `create_plan`, which carries `reject: exists(open-question)`:
-        this artifact is saved **with** its open questions, because owned
-        questions are the deliverable rather than a defect. Save the manifest
-        alongside it as `type: note`, related to the register, so the next run
-        can diff instead of re-reading the lake.
+        `status: draft`, `type: plan`: a register of proposed decisions is a
+        plan, so no schema change is needed. Deliberately unlike `create_plan`,
+        which refuses to save a plan carrying an open question, this one saves
+        **with** them, because owned questions are the deliverable. The
+        manifest saves alongside as `type: note`, related, so the next run can
+        diff.
 
     - id: sync
       requires: [save]
@@ -355,7 +324,7 @@ orchestration:
       run: hyprlayer thoughts sync
       because: >
         Pushes the register and manifest upstream. The other backends have no
-        push/pull cycle in hyprlayer, so there is nothing to sync there.
+        push/pull cycle, so there is nothing to sync.
 
     - id: derive-docs
       requires: [save]
@@ -377,9 +346,8 @@ orchestration:
         What does the register support writing, and what would you be
         inventing? See "What the documents may contain" below.
       because: >
-        Skipped entirely when the user wants only the register, which is a
-        legitimate and common way to run this. The register is the reviewable
-        artifact; the documents are one consumer of it.
+        The register is the reviewable artifact; the documents are one
+        consumer of it. Skipped when the user wants only the register.
 
     - id: present-docs
       requires: [derive-docs]
@@ -407,9 +375,8 @@ orchestration:
       produces: docs-approval
       asks-user: "Shall I write these [N] files into [path]?"
       because: >
-        A second unconditional gate, because this one leaves files on disk
-        outside the thoughts store. Approving the register is not approving the
-        documents.
+        A second gate, because this one leaves files on disk outside the
+        thoughts store. Approving the register is not approving the documents.
 
     - id: write-docs
       requires: [approve-docs, derive-docs]
@@ -425,10 +392,9 @@ orchestration:
       run: [Write per path in doc-set]
       because: >
         The `reject:` re-checks its own preconditions rather than trusting a
-        satisfied `requires:`. A satisfied `requires:` proves the step ran, not
-        that its check passed, and this step writes to the user's filesystem.
-        The `exit0` clause stops a second run silently overwriting a register
-        someone has since edited by hand: if it fires, present the diff and ask.
+        satisfied `requires:`, which proves a step ran and not that its check
+        passed. The `exit0` clause stops a second run overwriting docs someone
+        has edited by hand: if it fires, present the diff and ask.
 
     - id: show-result
       requires: [save, write-docs]
@@ -436,17 +402,10 @@ orchestration:
       presents: [tree-listing-of-what-was-written, register-location, open-questions-still-unowned]
       because: >
         The plan was a promise and the tree listing is the evidence it was
-        kept. Repeat the unowned open questions here, because they are the work
-        the user leaves with.
-
-        `requires:` names `save` as well as `write-docs`, and that is load
-        bearing rather than redundant. A skipped step counts as satisfied for
-        its dependents, so on a register-only run the whole document tail is
-        satisfied the moment `derive-docs` skips. Anchoring on `save` is what
-        keeps this step after the register exists instead of scheduling it in
-        wave one. Every step in that tail carries its own `when: flag(--out)`
-        for the same reason: guarding only `derive-docs` skips the derivation
-        and then cheerfully writes the files anyway.
+        kept. Repeat the unowned open questions, because they are the work the
+        user leaves with. `requires:` names `save` as well as `write-docs`
+        deliberately; the README's "What it caught" explains why a skipped step
+        needs an anchor.
 
     - id: iterate
       requires: [show-result]
@@ -457,11 +416,10 @@ orchestration:
         after: [decision-changed, driver-added, open-question-answered, source-added]
         bound: none                # every qualifying round, not a budget
       because: >
-        Answering an open question usually unblocks a decision, and a decision
-        that changes has to face the assayer again. This is the loop, and it is
-        unbounded on purpose: a register is a document you circulate and
-        revise, not a one-shot output. New sources re-enter at `inventory`, and
-        the manifest is what keeps that cheap.
+        Answering an open question usually unblocks a decision, and a changed
+        decision faces the assayer again. Unbounded on purpose: a register is
+        circulated and revised, not one-shot. New sources re-enter at
+        `inventory`, and the manifest keeps that cheap.
 ```
 
 ## Judgment
