@@ -21,9 +21,10 @@ loads:
   - required-metadata          # schema fields + backend-specific title format
   - subagent-guide             # the agent catalog and the spawning rules
   - lake-provenance            # locators, extraction, source authority - binds every agent
+  - plain-writing              # how everything this skill writes must read
   - templates/decision-register
 
-constraints: [lake-provenance] # binds you and every agent you spawn
+constraints: [lake-provenance, plain-writing]   # bind you and every agent you spawn
 
 on-empty-invocation: |
   I'll distil a body of research into a sourced decision register.
@@ -92,6 +93,7 @@ orchestration:
         - { value: source-paths,      src: "the file list inventory produced, filtered to this cluster" }
         - { value: cluster-boundary,  src: "the cluster list cluster produced" }
         - { value: locator-rules,     src: "_thoughts/lake-provenance.md" }
+        - { value: writing-rules,     src: "_thoughts/plain-writing.md" }
       ask: [buildable-findings, governing-commitments, contradictions, implicit-decisions, gaps]
       reject: not matches(source-paths, "/")
       because: >
@@ -203,6 +205,7 @@ orchestration:
         - { value: cluster-boundary,       src: "the specific gap this round is aimed at" }
         - { value: what-round-one-left-open, src: "the gaps: sections of the first round's reports" }
         - { value: locator-rules,          src: "_thoughts/lake-provenance.md" }
+        - { value: writing-rules,          src: "_thoughts/plain-writing.md" }
       ask: [buildable-findings, governing-commitments, contradictions, implicit-decisions, gaps]
       reject: not matches(source-paths, "/")
       because: >
@@ -250,6 +253,8 @@ orchestration:
         `reject:` is the mechanical backstop for the build test: an entry that
         names no artefact it changes, and does not bound one that does, is cut
         rather than written down. See "The build test is the whole filter".
+        `plain-writing.md` governs how it reads: decision first, plain words,
+        active voice, no preamble and no padding.
 
     - id: challenge
       requires: [register]

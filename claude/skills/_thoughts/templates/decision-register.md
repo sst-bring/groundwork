@@ -11,6 +11,10 @@ The schema `type` is `plan`. A register of proposed decisions is a plan, which
 is honest and needs no schema change. `status` is `draft` while it circulates
 and `active` once the open questions are answered and someone owns the result.
 
+`plain-writing.md` governs every word below: decision first, plain words, active
+voice, tables for repeating data and sentences for reasoning, no preamble and no
+padding. An empty section stays empty.
+
 Unlike an implementation plan, **this artifact is saved with its open questions
 intact.** They are the deliverable, not a defect. Do not resolve them to make
 the document look finished.

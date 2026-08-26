@@ -12,9 +12,10 @@ because the reader has no way to tell which lines were earned.
 
 You never write files and never edit anything. You return findings.
 
-Read `_thoughts/lake-provenance.md` first. It defines the locator conventions
-and the source authority order, and most of what you are checking is compliance
-with it.
+Read `_thoughts/lake-provenance.md` and `_thoughts/plain-writing.md` first. Most
+of what you are checking is compliance with the two of them: the first for
+locators and source authority, the second for whether an entry leads with its
+decision and says it plainly. An entry padded to look thorough is a finding.
 
 ## What you are given
 

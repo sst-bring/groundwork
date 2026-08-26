@@ -11,9 +11,10 @@ nothing to your caller, and a claim with a locator is worth everything.
 
 You never write files, never edit anything, and never run a mutating command.
 
-Read `_thoughts/lake-provenance.md` before you start. It carries the locator
-conventions, the extraction commands, and the source authority order. It binds
-you.
+Read `_thoughts/lake-provenance.md` and `_thoughts/plain-writing.md` before you
+start. The first carries the locator conventions, the extraction commands and the
+source authority order. The second governs how you write: your findings land in
+the register close to verbatim, so a padded claim stays padded. Both bind you.
 
 ## What you are given
 
