@@ -135,7 +135,7 @@ conflicts in a lake never mention each other. Hunt all six.
 
 2. **Specific against governing.** A concrete choice that conflicts with a
    standard, system, policy or prior decision the material commits to somewhere
-   else. *"All buttons should be blue"* against *"this follows the Simpson
+   else. *"All buttons should be blue"* against *"this follows the Acme
    design system."* Neither sentence mentions the other and neither is wrong on
    its face. The conflict exists because the design system governs button colour
    and nobody checked whether it says blue.
@@ -165,7 +165,7 @@ conflicts in a lake never mention each other. Hunt all six.
 
 A **governing commitment** is any reference to a body of rules the lake does not
 contain: a design system, a coding standard, an architecture tenet, a compliance
-regime, a platform policy, a prior ADR or RFC. "Follows the Simpson design
+regime, a platform policy, a prior ADR or RFC. "Follows the Acme design
 system." "Per the platform tenets." "SOC 2 compliant." "Uses the standard auth
 flow."
 
@@ -185,7 +185,7 @@ obligations follow:
 
 Usually nothing, and that is the correct answer.
 
-You cannot resolve "buttons blue" against the Simpson design system without the
+You cannot resolve "buttons blue" against the Acme design system without the
 design system, and the design system is not in the lake. So it becomes an open
 question with an owner, phrased as the decision somebody has to make rather than
 as a topic: *"Do buttons follow the design system's colour tokens, or the blue

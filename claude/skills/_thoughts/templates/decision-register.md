@@ -136,7 +136,7 @@ phrased as the decision somebody has to make rather than as a topic. Both sides
 carry locators. An owner is required.
 
 The common case is a specific choice against a governing commitment whose content
-is absent: "all buttons should be blue" against "this follows the Simpson design
+is absent: "all buttons should be blue" against "this follows the Acme design
 system." Neither side wins, because the design system is not here to consult.
 Picking one anyway is the worst available outcome, since a resolved-looking entry
 stops anyone checking.]

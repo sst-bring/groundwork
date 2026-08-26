@@ -1,11 +1,17 @@
 # groundwork
 
-One hand-authored skill and two agents for
-[hyprlayer](https://github.com/BrightBlock/hyprlayer-cli), targeting Claude Code.
-This repo is the source of truth; the files do nothing until they are copied into
-`~/.claude/`.
+One hand-authored skill and two agents for **[hyprlayer](https://www.hyprlayer.dev/)**,
+targeting Claude Code.
 
-Nothing here ships with hyprlayer. These are additions that sit alongside it.
+hyprlayer ([hyprlayer.dev](https://www.hyprlayer.dev/) ·
+[BrightBlock/hyprlayer-cli](https://github.com/BrightBlock/hyprlayer-cli)) is a
+CLI that installs a set of skills and agents into your coding agent, gives them a
+shared notes store across git, Obsidian, Notion and Anytype, and validates the
+declarative `orchestration:` blocks those skills use to wire up their sub-agents.
+This repo adds one skill to that set.
+
+The files here do nothing until they are copied into `~/.claude/`, and nothing
+here ships with hyprlayer itself. These are additions that sit alongside it.
 
 **[Skip to Install](#install)** if you just want to run it.
 
@@ -30,8 +36,8 @@ written down as a question rather than guessed at.
 Optionally it then renders that register into a repo's documentation.
 
 ```bash
-/groundwork --lake ~/research/takeoff --out ~/code/takeoff   # register + docs
-/groundwork --lake ~/research/takeoff                        # register only
+/groundwork --lake ~/research/atlas --out ~/code/atlas   # register + docs
+/groundwork --lake ~/research/atlas                        # register only
 ```
 
 The folder of research is called the **lake** throughout. `--lake` is required.
@@ -195,7 +201,7 @@ The obvious kind is two documents giving different numbers. Those are rare, and
 the team usually knows about them already. The useful kind is quieter.
 
 Say someone in a meeting says *"all buttons should be blue."* A different
-document says *"this follows the Simpson design system."* Neither sentence
+document says *"this follows the Acme design system."* Neither sentence
 mentions the other. Neither is wrong on its own. But the design system governs
 button colour, and nobody checked whether it says blue.
 
@@ -215,7 +221,7 @@ Six kinds get hunted:
 | Kind | Example or shape |
 |---|---|
 | Straight disagreement | "Fifteen minutes" against "an hour" |
-| **A choice against a standard** | "Buttons should be blue" against "follows the Simpson design system" |
+| **A choice against a standard** | "Buttons should be blue" against "follows the Acme design system" |
 | Split across groups | "Fifteen minutes" and "an hour" said in two different meetings, landing in two different topic groups |
 | Scope | "Not doing offline in v1" against a deck full of offline screens |
 | Two things that cannot both be true | "Real-time dashboard" against "nightly batch load" |

@@ -36,7 +36,7 @@ on-empty-invocation: |
   I'll inventory the sources, read them in parallel, and come back with claims
   and contradictions before proposing any decisions.
 
-  Tip: `/groundwork --lake ~/research/takeoff --out ~/code/takeoff`
+  Tip: `/groundwork --lake ~/research/atlas --out ~/code/atlas`
 
 artifact:
   type: plan
@@ -327,9 +327,9 @@ orchestration:
         - { value: backend,    src: "hyprlayer storage info --json" }
         - { value: project,    src: "the subject, or the --out repo name if there is one" }
       title-format:
-        git:      kebab-case-dated-slug     # 2026-08-25-takeoff-decision-register
+        git:      kebab-case-dated-slug     # 2026-08-25-atlas-decision-register
         obsidian: kebab-case-dated-slug
-        notion:   human-readable-heading    # Takeoff decision register
+        notion:   human-readable-heading    # Atlas decision register
         anytype:  human-readable-heading
       destination:
         git:      thoughts/shared/plans/<title>.md
@@ -541,7 +541,7 @@ kinds. Work it deliberately rather than hoping a conflict jumps out.
 returned a list of them: references to a design system, a set of platform
 tenets, a compliance regime, a prior ADR. For each one, sweep every cluster's
 claims and ask which specific choices fall inside its remit. That is the search
-that finds "all buttons should be blue" against "this follows the Simpson design
+that finds "all buttons should be blue" against "this follows the Acme design
 system," and note that it does not work in the other direction. Reading the blue
 button claim tells you nothing, because nothing about it looks wrong. The
 commitment is what tells you where to look.

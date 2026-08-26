@@ -58,7 +58,7 @@ decisions with that framing rather than in Claims.
 
 Every reference in this cluster to a body of rules the lake does not contain: a
 design system, a coding standard, an architecture tenet, a compliance regime, a
-platform policy, a prior ADR or RFC. "Follows the Simpson design system." "Per
+platform policy, a prior ADR or RFC. "Follows the Acme design system." "Per
 the platform tenets." "SOC 2 compliant."
 
 Report each with its locator, and mark whether the referenced thing is present
@@ -68,7 +68,7 @@ that clashes with a commitment is usually in a different cluster, and your calle
 is the only one holding both.
 
 This section is why the caller can catch "all buttons should be blue" against
-"this follows the Simpson design system." Neither half looks like a
+"this follows the Acme design system." Neither half looks like a
 contradiction on its own. Omit the commitment and that conflict is invisible for
 the rest of the run.
 
