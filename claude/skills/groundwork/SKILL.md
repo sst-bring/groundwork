@@ -173,7 +173,7 @@ orchestration:
       judgment: >
         Which claims conflict once you hold every cluster at once, and which
         specific choices clash with a governing commitment declared elsewhere?
-        See "Finding the contradictions nobody wrote down" below.
+        See "Hunting the quiet contradictions" below.
       because: >
         `owns:` names arbitration, and this is where it starts. A prospector
         sees one cluster and reports conflicts inside it; the conflicts that
@@ -365,6 +365,14 @@ orchestration:
         no-match: ["not flag(--out)"]
       inline: true
       produces: doc-set
+      documents:                    # exhaustive: nothing outside this list is written
+        "docs/domain-model.md":     "glossary, relationships, state machines, actors, each with a locator"
+        "docs/constraints.md":      "numbers, non-goals, integrations, each with a locator and an invalidation trigger"
+        "docs/technical-design.md": "headings for the decisions still to make, each with the constraints bounding it and the questions blocking it"
+        "docs/open-questions.md":   "the owner table, verbatim from the register"
+        "docs/decisions.md":        "flat we-chose-X-because-locator lines"
+        "CLAUDE.md":                "domain vocabulary and non-goals only"
+      never-writes: [dependency-manifest, lockfile, ci-config, dockerfile, language-choice, directory-skeleton]
       judgment: >
         What does the register support writing, and what would you be
         inventing? See "What the documents may contain" below.
@@ -456,276 +464,85 @@ orchestration:
         the manifest is what keeps that cheap.
 ```
 
-## Clustering the lake
-
-You own this and it is the decision that most affects what the prospectors can
-do. A cluster is a set of sources that argue about the same thing. It is not a
-folder, not a date range, and not a document type.
-
-Cluster by subject, because contradictions only surface inside a cluster. Two
-sources that disagree about the batch window have to reach the same prospector,
-or nobody notices they disagree. If you cluster by folder and the brief lives in
-`docs/` while the transcript lives in `meetings/`, the disagreement survives
-into the register as two confident entries.
-
-Err toward fewer, larger clusters. A prospector with forty documents returns
-fewer claims per document than one with eight, but a claim it returns is
-reconciled against its neighbours already. Overlap is worse than size: the same
-source in two clusters produces the same claim twice with different framings,
-and you cannot tell downstream whether that is corroboration or duplication.
-
-What failure looks like: a register where two entries cite the same transcript
-for opposite conclusions, and neither mentions the other.
-
-## A prototype is a decision log
-
-When you frame the `cartographer` prompt in `map-prototype`, ask what the code
-decided, not how it works.
-
-A vibe-coded prototype has already settled auth, data layer, state management,
-transport and deployment shape. Nobody reviewed any of it. A normal
-cartographer prompt returns an accurate map of those choices, which is exactly
-the wrong output, because an accurate map reads as a specification.
-
-So ask for: what platform choices are visible in this tree, where each is
-visible, and what a reader would have to accept if they kept it. Then every one
-of those becomes an accept-or-override row in the register, never a driver.
-
-What failure looks like: the register cites `src/api/pull.ts:41` as a driver for
-"requests are pull-based." The prototype is not evidence of a decision. It is
-evidence that somebody typed something on a Tuesday.
-
-### Which agent
-
-`agent: one-of [cartographer, codebase-pattern-finder]`, and the size of the
-prototype decides it.
-
-Take the `cartographer` when the prototype is a real application: several
-directories, its own dependency set, more platform choices than you can count
-by reading one file. You want the map, because the implicit decisions are spread
-across it and any one file understates them.
-
-Take `codebase-pattern-finder` when the prototype is one route handler, one
-component, or a single script somebody pasted into the lake. A cartographer on
-that returns a map of forty lines and costs a whole context, and the narrow
-agent answers the only question you had.
-
-When it is genuinely borderline, take the cartographer. Under-reading a
-prototype means inheriting its decisions silently, which is the failure this
-whole section exists to prevent, and over-reading one costs a context.
-
-## Prior context
-
-Skip the archivist only when you are certain there is no trail: a genuinely new
-subject, or a lake you have already distilled in this session.
-
-Otherwise pull it, because the cost is asymmetric. The archivist runs alongside
-the prospectors and costs no wall clock, and what it finds changes the register's
-job. A prior register on the same subject means this run is an update, so
-entries that already exist keep their ids and the new work is the diff. A
-superseded plan means a decision was made and then reversed, and a register that
-re-proposes the reversed option will be read as not having done the reading.
-
-What comes back is a briefing, not a verdict. A prior decision is a claim like
-any other and needs a locator, so cite the artifact rather than asserting the
-decision on the archivist's word.
-
-## Finding the contradictions nobody wrote down
-
-The prospectors hand you conflicts they found inside one cluster. Those are the
-cheap ones. This step is for the conflicts that only exist when you put two
-clusters side by side, and `lake-provenance.md` has the taxonomy of all six
-kinds. Work it deliberately rather than hoping a conflict jumps out.
-
-**Start from the governing commitments, not from the claims.** Every prospector
-returned a list of them: references to a design system, a set of platform
-tenets, a compliance regime, a prior ADR. For each one, sweep every cluster's
-claims and ask which specific choices fall inside its remit. That is the search
-that finds "all buttons should be blue" against "this follows the Acme design
-system," and note that it does not work in the other direction. Reading the blue
-button claim tells you nothing, because nothing about it looks wrong. The
-commitment is what tells you where to look.
-
-The reason to do it this way round is that the specific choice is the one that
-gets built. Somebody writes the blue button on Monday. The commitment sits in a
-document nobody reopens, and the conflict surfaces at design review six weeks
-later, when it costs a sprint instead of a sentence.
-
-**Then sweep for the other cross-cluster kinds.** Two numbers for the same
-quantity from different meetings. Something in one document's non-goals that
-another treats as a requirement. Two requirements that are each sensible and
-jointly impossible, like a real-time dashboard against a nightly batch load. A
-document that says one thing where the prototype silently does another.
-
-**Most of these resolve to an open question, and that is the right answer.** You
-cannot settle "buttons blue" against a design system that is not in the lake.
-The entry is a question phrased as the decision somebody has to make, with the
-owner named, and both sides carrying locators. Picking a side here is the single
-worst thing this skill can do, because a resolved-looking entry stops anybody
-from checking. Picking blue because a human said it out loud violates the
-source-authority order outright: a transcript is evidence of discussion, and a
-stated commitment to a standard outranks it. Picking the design system is just
-as wrong, since you have not read it and it may say blue.
-
-**Name every referenced-but-absent source explicitly**, even where you found no
-conflict against it. A commitment whose content is not in the lake is the
-likeliest hiding place for a contradiction you did not find, and listing it tells
-the reader which document to go and fetch. It also stops the register reading as
-though it checked something it could not.
-
-What failure looks like: the register asserts buttons are blue, cites the
-transcript, and never mentions the design system. Six weeks later somebody opens
-the design system and the register's credibility goes with it.
-
-## Which questions are actually for the human
-
-At `present-claims` you will have more open questions than are worth asking.
-Split them.
-
-A question another pass over the lake can answer is not a question for the
-user. Asking it spends their attention on work you could have done, and it
-teaches them that this tool needs supervision. Send those to `deeper-prospect`.
-
-A question for the user is one where the lake genuinely has no answer: which of
-two contradicting sources is authoritative, whether a document was ever signed
-off, who owns a gap, whether a stated constraint still holds. These turn on
-facts about the organisation rather than facts in the documents.
-
-The asymmetry that decides borderline cases: a question you should have
-researched costs the user thirty seconds of irritation. A question you guessed
-at instead of asking costs a wrong decision in a register that looks sourced.
-Ask when unsure.
-
-## A correction needs a locator too
-
-When the user corrects a claim, you have two things that disagree: a locator and
-an assertion. The locator is not automatically wrong.
-
-Usually the correction is right and the source is stale, in which case find what
-makes it stale and cite that instead. Sometimes the user is remembering a
-conversation that never made it into the lake, and then the correction is a new
-claim with the user as its locator, which is legitimate and must be recorded as
-such rather than laundered into a document citation.
-
-Occasionally the user is simply wrong about their own project, and the source
-says what you said it said. Say so, quote it, and let them decide. That is
-uncomfortable and it is the job: a register that silently adopts a
-misremembering is worse than one that surfaces the disagreement.
-
-Where the correction invalidates a whole cluster's reading, `retry:` back to
-`prospect` rather than patching entries by hand. One re-run, and if it is still
-wrong the problem is your clustering.
-
-What failure looks like: the register asserts something with a page citation,
-and the cited page says the opposite, because you took a correction and kept the
-old locator.
-
-## Source authority is applied, not decided
-
-`lake-provenance.md` carries the order. Your job at `reconcile` is to apply it
-and record the application, not to weigh each contradiction on its merits.
-
-This is deliberate. Per-contradiction judgment feels more careful and is less
-defensible: you will unconsciously favour whichever source supports the cleaner
-architecture, and nobody reviewing the register can see you doing it. A declared
-order applied consistently is auditable even where it is wrong.
-
-Two rules carry most of the weight. A transcript is evidence of discussion, not
-decision, unless someone states a decision as made. And later beats earlier only
-at equal document type, so a recent hallway conversation does not overturn a
-signed-off brief.
-
-Record every application in the contradictions table: both sides, both
-locators, the winner, the rule. Never drop the loser. The overruled claim is
-frequently the one a stakeholder remembers hearing, and a register that does not
-mention it reads as though it missed the meeting.
-
-Where the order genuinely does not resolve a contradiction, that is an open
-question, not a coin flip.
-
-## The line between derived and invented
-
-The register may assert what the research supports. It may not assert what the
-research implies to you.
-
-Design research reliably yields domain nouns and their relationships, actors and
-their capabilities, workflows and states, constraints stated as numbers,
-explicit non-goals, and named integration surfaces. Those are extractions and
-they belong in the register with locators.
-
-It does not yield language, framework, cloud service, database engine, service
-boundaries, transport mechanism, or deployment topology. When one of those
-appears in a source it is an aside by whoever was in the room, and it enters the
-register as an implicit decision to be reviewed, never as a driver.
-
-The failure mode is asymmetric, and that asymmetry is the whole reason for the
-rule. A wrong extraction is visible: a reader sees "requests are pull-based" and
-says no, we decided the opposite. A wrong inference is invisible, because
-"therefore Service Bus" is a sentence nobody can check against a pile of
-transcripts. Only one of those two errors survives review.
-
-So when an entry's resolution names a technology, treat it as a defect until you
-can point at the locator where a person chose it.
-
-## The arbiter, not a relay
-
-The assayer's report is input, not truth. You decide which findings to accept,
-and you state the call and your reason.
-
-Accept anything where it opened a locator and found something else there. That
-is a checkable fact and it outranks your memory of writing the entry.
-
-Push back where it flagged honest uncertainty as a defect. An entry that records
-an assumption plus its invalidation trigger is a correct entry, and an assayer
-that wants every entry decided has misread the artifact. Say so rather than
-resolving the entry to satisfy it.
-
-Take a `verdict: reject` seriously and check it yourself before acting. A reject
-sends the pass back to the lake, which is expensive, and it is the finding most
-likely to be an over-reaction to a handful of bad entries. If three entries are
-wrong, that is a revise.
-
-What failure looks like: you relay all nine findings to the user as though they
-were nine facts, and they now have to arbitrate a review they did not read. That
-is your job, and `owns: [arbitration]` says so.
-
-## What the documents may contain
-
-Six files, and the constraint is content rather than confidence.
-
-`docs/domain-model.md` carries the glossary, entity relationships, state
-machines and actors, each with a locator. This is the highest-confidence
-extraction in the pass and the document that justifies the whole exercise.
-
-`docs/constraints.md` carries the falsifiable statements: numbers, non-goals,
-named integrations, compliance requirements, each with a locator and an
-invalidation trigger. Short and dense. This is the document people argue with
-productively.
-
-`docs/technical-design.md` is deliberately mostly empty, and that is a feature.
-Real headings for the decisions that must be made, and under each one the
-constraints that bound it plus the open questions blocking it. So a Transport
-section does not say "Azure Service Bus." It says pull-based per D3,
-fifteen-minute window per C7, at-least-once versus exactly-once open and owned
-by Dana. Architecture homework, pre-researched.
-
-`docs/open-questions.md` carries the table with owners, verbatim from the
-register.
-
-Plus `CLAUDE.md`, kept thin: the domain vocabulary and the non-goals. Those are
-the two things an agent gets wrong constantly and each costs a paragraph. And
-`docs/decisions.md`, the flat "we chose X because [locator]" list, which
-recovers the durable-why value cheaply and can be expanded into numbered ADRs
-later by anyone who wants them.
-
-What is not written, ever, unless a register entry names it as a decided
-decision with a locator: dependency manifests, lockfiles, CI configuration,
-Dockerfiles, language or framework choice, and directory skeletons. A directory
-layout is a technical decision wearing a filesystem costume.
-
-That constraint is what makes the derived-versus-conventional labelling
-unnecessary. Everything written traces to an entry by construction, so there is
-no conventional-default column to review. A label reading "conventional" is an
-honest way of saying "I made this up," and a user skimming forty paths will
-approve it, because reviewing forty paths for unstated assumptions is precisely
-the work this tool was supposed to do for them.
+## Judgment
+
+**Clustering the lake.** Group by subject, never by folder or by date. A
+contradiction only surfaces when both halves reach the same prospector, so a
+brief in `docs/` and a transcript in `meetings/` have to land together. Err
+toward fewer, larger clusters: overlap is worse than size, because the same
+source in two clusters returns the same claim twice and you cannot tell
+corroboration from duplication. Failure looks like two entries citing one
+transcript for opposite conclusions, neither mentioning the other.
+
+**A prototype is a decision log.** Ask what the code decided, not how it works.
+An accurate map of a prototype reads as a specification, which is exactly wrong,
+because nobody reviewed those choices. Every platform choice becomes an
+accept-or-override row, never a driver. Size picks the agent: `cartographer` for
+an application spread across directories, `codebase-pattern-finder` for one route
+handler somebody pasted in. Borderline goes to the cartographer, since
+under-reading inherits decisions silently and over-reading only costs a context.
+
+**Prior context.** Pull the archivist unless you are certain there is no trail.
+It runs alongside the prospectors and costs no wall clock, and what it finds
+changes the job: a prior register makes this run a diff, and a superseded plan
+means re-proposing the reversed option will read as not having done the reading.
+It returns a briefing, not a verdict, so cite the artifact rather than asserting
+on its word.
+
+**Hunting the quiet contradictions.** `lake-provenance.md` carries the six kinds.
+The one thing it cannot give you is the search direction: sweep from each
+governing commitment outward to the choices under it, never from the claims.
+Reading "all buttons should be blue" tells you nothing because nothing about it
+looks wrong; the standard is what tells you where to look. Most of what you find
+resolves to a question with an owner, and picking a side is the worst available
+outcome, because a settled-looking entry stops anyone checking.
+
+**Which questions are actually for the human.** Ask only what another pass over
+the lake cannot settle: which of two sources is authoritative, whether a document
+was signed off, who owns a gap, whether a stated constraint still holds. The
+error is asymmetric. Over-asking costs thirty seconds of irritation; under-asking
+puts a guess into a document that looks sourced. Ask when unsure.
+
+**A correction needs a locator too.** A correction and a locator that disagree
+are two claims, and the locator is not automatically the wrong one. Usually the
+source is stale, so find what makes it stale and cite that. Sometimes the user
+is recalling a conversation that never entered the lake, and then they are the
+locator, recorded as such rather than laundered into a document citation.
+Occasionally they are wrong and the source says what you said it said: quote it
+and let them decide. Where a correction invalidates a cluster's whole reading,
+`retry:` back to `prospect` rather than patching entries by hand.
+
+**Source authority is applied, not decided.** The order lives in
+`lake-provenance.md`. Apply it and record the application; do not weigh conflicts
+on their merits. Per-case judgment feels more careful and is less defensible,
+because it drifts toward whichever source supports the cleaner architecture and
+no reviewer can see that happening. Record both sides, both locators, the winner
+and the rule, and never drop the loser: the overruled claim is often the one a
+stakeholder remembers hearing. Where the order does not resolve a conflict, that
+is an open question, not a coin flip.
+
+**The line between derived and invented.** Assert what the research supports,
+never what it implies to you. A lake yields domain nouns, actors, workflows,
+stated numbers, non-goals and named integrations. It does not yield language,
+framework, cloud service, database engine, service boundaries or transport; when
+one appears it is somebody's aside and enters as an implicit decision to review.
+Treat any resolution naming a technology as a defect until you can point at the
+locator where a person chose it.
+
+**The arbiter, not a relay.** The assayer's report is input. Accept anything
+where it opened a locator and found something else there, which outranks your
+memory of writing the entry. Push back where it flagged labelled uncertainty as a
+defect: an assumption carrying an invalidation trigger is a correct entry, and an
+assayer wanting everything decided has misread the artifact. Check a
+`verdict: reject` yourself before acting, since it sends the pass back to the
+lake and is the finding likeliest to over-react to a few bad entries. Relaying
+findings unarbitrated is the failure; `owns: [arbitration]` says so.
+
+**What the documents may contain.** The `documents:` map on `derive-docs` is
+exhaustive, and `never-writes:` is why. Nothing outside that list is created
+unless a register entry names it with a locator, because a directory layout is a
+technical decision wearing a filesystem costume. `technical-design.md` stays
+structurally complete and substantively open; that is the deliverable, not a
+shortfall. The asymmetry is the whole reason: a wrong extraction is visible to a
+reader, a wrong dependency set is not, so the fix is to not generate it rather
+than to label it conventional.
