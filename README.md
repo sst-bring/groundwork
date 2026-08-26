@@ -1,17 +1,8 @@
 # groundwork
 
-One hand-authored skill and two agents for **[hyprlayer](https://www.hyprlayer.dev/)**,
-targeting Claude Code.
+Turn a pile of product and design research into a sourced decision register.
 
-hyprlayer ([hyprlayer.dev](https://www.hyprlayer.dev/) ·
-[BrightBlock/hyprlayer-cli](https://github.com/BrightBlock/hyprlayer-cli)) is a
-CLI that installs a set of skills and agents into your coding agent, gives them a
-shared notes store across git, Obsidian, Notion and Anytype, and validates the
-declarative `orchestration:` blocks those skills use to wire up their sub-agents.
-This repo adds one skill to that set.
-
-The files here do nothing until they are copied into `~/.claude/`, and nothing
-here ships with hyprlayer itself. These are additions that sit alongside it.
+Built for [hyprlayer](https://www.hyprlayer.dev/) ([hyprlayer-cli](https://github.com/BrightBlock/hyprlayer-cli)) on Claude Code.
 
 **[Skip to Install](#install)** if you just want to run it.
 
