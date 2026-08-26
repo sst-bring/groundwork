@@ -32,12 +32,51 @@ table, a type or a route, it does not belong here.]
 
 ### Relationships
 
-[Entity to entity, one line each, each with a locator.]
+[Entity to entity, one line each, each with a locator. **This table is the
+citable form.** The diagram below is a view of it and adds nothing.]
+
+| From | To | Cardinality | Locator |
+|---|---|---|---|
+| [entity] | [entity] | [one-to-many / one-to-one / many-to-many / **unstated**] | [locator] |
+
+```mermaid
+erDiagram
+    PROJECT ||--o{ SERVICE_REQUEST : "has"
+```
+
+**Draw only rows whose cardinality is cited.** Mermaid's `erDiagram` has no
+notation for unknown cardinality: every line you draw asserts one. `||--o{` is a
+claim that the relationship is exactly-one-to-zero-or-many, and if no source said
+so, drawing it invents a decision the research does not support. Rows marked
+**unstated** stay in the table, stay out of the diagram, and are listed underneath
+it:
+
+**Cardinality unstated, omitted from the diagram:** [From → To, and who would
+know.]
 
 ### States
 
 [Per entity that has a lifecycle: the states and the transitions, with locators.
-Decks are usually the best source, because a screen is a state.]
+Decks are usually the best source, because a screen is a state. Same rule: the
+table is citable, the diagram is a view.]
+
+| Entity | From | To | Trigger | Locator |
+|---|---|---|---|---|
+
+```mermaid
+stateDiagram-v2
+    [*] --> Draft
+    Draft --> Submitted : submit
+    Submitted --> Approved : approve
+    Submitted --> Draft : request changes
+```
+
+**Draw only cited transitions.** A state with no cited way out is a finding, not
+a gap in the diagram: say so under it rather than inventing an edge to make the
+picture look closed. An unreachable state is exactly the kind of thing this
+document exists to surface.
+
+**States with no cited exit:** [state, and what the research does not say.]
 
 ## Constraints
 

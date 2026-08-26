@@ -339,7 +339,7 @@ orchestration:
       inline: true
       produces: doc-set
       documents:                    # exhaustive: nothing outside this list is written
-        "docs/domain-model.md":     "glossary, relationships, state machines, actors, each with a locator"
+        "docs/domain-model.md":     "entities, relationships and state machines, each with a locator, plus a mermaid erDiagram and stateDiagram rendered from the cited rows only"
         "docs/constraints.md":      "numbers, non-goals, integrations, each with a locator and an invalidation trigger"
         "docs/technical-design.md": "headings for the decisions still to make, each with the constraints bounding it and the questions blocking it"
         "docs/open-questions.md":   "the owner table, verbatim from the register"
@@ -512,7 +512,12 @@ lake and is the finding likeliest to over-react to a few bad entries. Relaying
 findings unarbitrated is the failure; `owns: [arbitration]` says so.
 
 **What the documents may contain.** The `documents:` map on `derive-docs` is
-exhaustive, and `never-writes:` is why. Nothing outside that list is created
+exhaustive, and `never-writes:` is why. `domain-model.md` carries mermaid
+diagrams, which GitHub renders inline, but they are views of the cited tables and
+never a source: draw only relationships whose cardinality a source states and
+only transitions a source gives, because a drawn line asserts a cardinality and
+mermaid has no notation for "unknown". Anything uncited stays in the table and is
+listed as omitted, which is the finding. Nothing outside that list is created
 unless a register entry names it with a locator, because a directory layout is a
 technical decision wearing a filesystem costume. `technical-design.md` stays
 structurally complete and substantively open; that is the deliverable, not a
