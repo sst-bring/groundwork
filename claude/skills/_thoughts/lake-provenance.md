@@ -46,6 +46,40 @@ Worked examples:
 | Diagram | the named shape or lane | `flow.vsdx > Ingestion lane, "retry" box` |
 | Anything else | the best rung of the ladder above | `archive.zip > notes/day2.txt:14` |
 
+## The build test
+
+**Applied before the locator rule, and it discards more than anything else here.**
+
+A claim enters the register only if it changes what gets built. Name the artefact
+that changes: a schema, an endpoint, a component, a screen state, a pipeline, a
+deployment target. If you cannot name one, **discard the claim silently.** Do not
+record it, do not report it as a gap, do not mention it.
+
+Three buckets, which between them cover a software build:
+
+- **Frontend.** Screens and their states, routing, client state ownership,
+  offline behaviour, what a user can do.
+- **Backend.** Entities and relationships, ownership, state transitions,
+  endpoints, authorization, integration surfaces, consistency.
+- **Infrastructure.** Runtime shape, deployment, scheduling windows, data
+  residency, scale figures, failure behaviour.
+
+**One carve-out.** A non-code fact that *bounds* one of those decisions
+survives, attached to the decision it bounds, never as an entry of its own. A
+launch date that forces one service instead of four. A legal requirement that
+fixes a region. "Field engineers work offline for eight hours" is a user fact and
+the largest architectural forcing function in that sentence. Keep those. Drop the
+free-floating context around them.
+
+**What this removes, as a class rather than case by case:** who said something,
+when they said it, whether two people were talking past each other, how a
+question got routed, and what anyone thinks about anyone else. None of it is the
+register's business. A well-sourced, correctly-quoted, precisely-located claim
+that changes no artefact is still discarded.
+
+The test is deliberately mechanical. "Is this significant?" invites drift; "name
+the file that changes" does not.
+
 ## The hard rule
 
 **An unlocatable driver does not enter the register as an assertion.** It

@@ -92,13 +92,14 @@ orchestration:
         - { value: source-paths,      src: "the file list inventory produced, filtered to this cluster" }
         - { value: cluster-boundary,  src: "the cluster list cluster produced" }
         - { value: locator-rules,     src: "_thoughts/lake-provenance.md" }
-      ask: [claims-with-locators, governing-commitments, contradictions, implicit-decisions, gaps]
+      ask: [buildable-findings, governing-commitments, contradictions, implicit-decisions, gaps]
       reject: not matches(source-paths, "/")
       because: >
-        One prospector per cluster, all in one message, each returning sourced
-        claims rather than a summary. That is what makes the register auditable
-        later. The `reject:` catches "the research folder"; a real path list
-        aimed at the wrong cluster stays your judgment in `cluster`.
+        One prospector per cluster, all in one message. `lake-provenance.md`'s
+        build test binds them, so what comes back is findings that change an
+        artefact, not a summary of what people said. Expect most of the lake to
+        be discarded. The `reject:` catches "the research folder"; a real path
+        list aimed at the wrong cluster stays your judgment in `cluster`.
 
     - id: map-prototype
       requires: [cluster]
@@ -202,7 +203,7 @@ orchestration:
         - { value: cluster-boundary,       src: "the specific gap this round is aimed at" }
         - { value: what-round-one-left-open, src: "the gaps: sections of the first round's reports" }
         - { value: locator-rules,          src: "_thoughts/lake-provenance.md" }
-      ask: [claims-with-locators, governing-commitments, contradictions, implicit-decisions, gaps]
+      ask: [buildable-findings, governing-commitments, contradictions, implicit-decisions, gaps]
       reject: not matches(source-paths, "/")
       because: >
         A second round aimed at what round one surfaced and what the user
@@ -241,11 +242,14 @@ orchestration:
       requires: [present-decisions]
       inline: true
       produces: register-body
+      reject: not matches(entry, "frontend|backend|infrastructure|bounds")
       because: >
         The synthesis, and `owns:` says it is never delegated. Build it per
         `templates/decision-register`: every entry a decision rather than a
-        topic, every driver carrying a locator, every question an owner, and
-        the contradictions table naming the losers.
+        topic, every driver carrying a locator, every question an owner. The
+        `reject:` is the mechanical backstop for the build test: an entry that
+        names no artefact it changes, and does not bound one that does, is cut
+        rather than written down. See "The build test is the whole filter".
 
     - id: challenge
       requires: [register]
@@ -423,6 +427,17 @@ orchestration:
 ```
 
 ## Judgment
+
+**The build test is the whole filter.** `lake-provenance.md` carries it and it
+decides more of the output than every other rule combined. An entry earns its
+place by naming the artefact it changes: a schema, an endpoint, a component, a
+screen state, a pipeline, a deployment target. A non-code fact that bounds one of
+those survives attached to it, never alone. Everything else goes, however well
+sourced. Who said a thing, when, and whether two people talked past each other is
+not this document's business, and a correctly quoted, precisely located claim that
+changes no artefact is still noise. Expect to discard most of what the lake
+contains; a register that reads as a summary of the research has failed even when
+every line in it is true.
 
 **Clustering the lake.** Group by subject, never by folder or by date. A
 contradiction only surfaces when both halves reach the same prospector, so a

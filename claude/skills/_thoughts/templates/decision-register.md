@@ -15,33 +15,20 @@ Unlike an implementation plan, **this artifact is saved with its open questions
 intact.** They are the deliverable, not a defect. Do not resolve them to make
 the document look finished.
 
+**Every section here is subject to `lake-provenance.md`'s build test.** An entry
+earns its place by naming the artefact it changes, or by bounding an entry that
+does. Sections come out empty rather than padded, and an empty section is
+information. A register that reads as a summary of the research has failed even
+where every line in it is true.
+
 ````markdown
 # [Subject] Decision Register
 
-## Overview
+## Data model
 
-[What body of research this covers, and what it is for. One paragraph.]
-
-## Sources
-
-[Every source that produced an entry, with its type. Sources read and found to
-contain nothing are still listed, marked `no entries`. Sources that could not be
-read are listed and marked `unread`, because an unread source is a known gap.]
-
-| Source | Type | Status |
-|---|---|---|
-| [path] | [pdf / transcript / deck / doc / prototype / image] | [read / no entries / unread] |
-
-## Domain model
-
-[The highest-confidence extraction in the whole document. Design research is
-dense with consistent nouns even where it contradicts itself on everything else.]
-
-### Glossary
-
-| Term | Meaning | Locator |
-|---|---|---|
-| [noun] | [what it means in this domain] | [locator] |
+[Only what becomes a schema. Entities, how they relate, and the states each one
+moves through. Not a glossary and not a persona list: if a noun does not become a
+table, a type or a route, it does not belong here.]
 
 ### Relationships
 
@@ -51,11 +38,6 @@ dense with consistent nouns even where it contradicts itself on everything else.
 
 [Per entity that has a lifecycle: the states and the transitions, with locators.
 Decks are usually the best source, because a screen is a state.]
-
-### Actors
-
-| Actor | Can do | Locator |
-|---|---|---|
 
 ## Constraints
 
@@ -143,15 +125,6 @@ stops anyone checking.]
 
 | # | Needs a resolution on | Side A `[locator]` | Side B `[locator]` | Blocks | Owner |
 |---|---|---|---|---|---|
-
-## Contradictions resolved
-
-[Every contradiction the reconcile pass did settle: both sides, which won, which
-authority rule decided it. A reader who remembers hearing the losing side needs
-to find it here.]
-
-| # | Side A `[locator]` | Side B `[locator]` | Winner | Rule |
-|---|---|---|---|---|
 
 ## What this register does not cover
 
