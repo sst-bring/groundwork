@@ -1,0 +1,4 @@
+# hyprlayer thoughts store: absolute symlinks into ~/thoughts, local to each machine
+thoughts/
+
+.DS_Store
